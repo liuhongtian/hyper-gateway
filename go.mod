@@ -2,7 +2,10 @@ module hyper-gateway
 
 go 1.17
 
-require github.com/gin-gonic/gin v1.7.2
+require (
+	github.com/gin-gonic/gin v1.7.2
+	github.com/liuhongtian/hypergo v0.0.2
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
