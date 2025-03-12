@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"hyper-gateway/config"
 	"hyper-gateway/hypercloud/gateway/handler"
 	"hyper-gateway/hypercloud/gateway/middleware"
 	"hyper-gateway/lht"
@@ -12,6 +14,11 @@ import (
 
 // HyperCloud API Gateway
 func main() {
+	// 加载配置文件
+	if err := config.LoadConfig("config.yml"); err != nil {
+		log.Fatalf("Error loading config: %v", err)
+	}
+
 	lht.Help()
 	log.Println("Server is UP!")
 	defer log.Println("Server will Down!")
@@ -19,14 +26,16 @@ func main() {
 	misc.Sample()
 	misc.SampleWithParam("liuhongtian")
 
-	router := gin.Default()
+	r := gin.Default()
 
-	// add middlewares
-	router.Use(middleware.Logger())
+	// 添加中间件
+	r.Use(middleware.Logger())
 
-	// add routes
-	router.GET("/users/:loginName", handler.GetUser)
-	router.POST("/users", handler.CreateUser)
+	// 动态添加路由
+	for _, route := range config.AppConfig.Routes {
+		r.Handle(route.Method, route.Path, handler.Handle(route.Handler))
+	}
 
-	router.Run(":9080")
+	// 从配置文件读取端口
+	r.Run(fmt.Sprintf(":%d", config.AppConfig.Server.Port))
 }

@@ -1,0 +1,10 @@
+server:
+  port: 9080
+
+routes:
+  - path: "/users/:loginName"
+    method: "GET"
+    handler: "GetUser"
+  - path: "/users"
+    method: "POST"
+    handler: "CreateUser" 
