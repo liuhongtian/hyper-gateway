@@ -1,16 +1,16 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"hyper-gateway/hypercloud/gateway/data"
+	"hyper-gateway/hypercloud/gateway/store"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-var users = make(map[string]*data.User)
-
 func GetUser(c *gin.Context) {
-	user := users[c.Param("loginName")]
+	user := store.Users[c.Param("loginName")]
 	if user != nil {
 		log.Println("found user: " + user.ToString())
 	} else {
@@ -23,6 +23,6 @@ func CreateUser(c *gin.Context) {
 	var user data.User
 	c.ShouldBindJSON(&user)
 	log.Println("created user: " + user.ToString())
-	users[user.LoginName] = &user
+	store.Users[user.LoginName] = &user
 	c.IndentedJSON(http.StatusCreated, user)
 }

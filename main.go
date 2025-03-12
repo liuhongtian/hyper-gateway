@@ -1,15 +1,16 @@
 package main
 
 import (
-	//"10.1.1.42/research/samplego/misc"
-	"github.com/gin-gonic/gin"
-	"github.com/liuhongtian/hypergo/misc"
 	"hyper-gateway/hypercloud/gateway/handler"
+	"hyper-gateway/hypercloud/gateway/middleware"
 	"hyper-gateway/lht"
 	"log"
+
+	"github.com/gin-gonic/gin"
+	"github.com/liuhongtian/hypergo/misc"
 )
 
-//HyperCloud API Gateway
+// HyperCloud API Gateway
 func main() {
 	lht.Help()
 	log.Println("Server is UP!")
@@ -19,6 +20,11 @@ func main() {
 	misc.SampleWithParam("liuhongtian")
 
 	router := gin.Default()
+
+	// add middlewares
+	router.Use(middleware.Logger())
+
+	// add routes
 	router.GET("/users/:loginName", handler.GetUser)
 	router.POST("/users", handler.CreateUser)
 
